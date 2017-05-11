@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # ----------------------------------------------------------------------------
-# Copyright (c) 2016--, genome-subsampler development team.
+# Copyright (c) 2017--, genome-subsampler development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #
@@ -30,12 +30,10 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Bio-Informatics',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.3',
-    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
     'Operating System :: Unix',
-    'Operating System :: POSIX',
-    'Operating System :: MacOS :: MacOS X',
-    'Operating System :: Microsoft :: Windows']
+    'Operating System :: POSIX']
 
 
 description = 'genome-subsampler: ?'
@@ -59,8 +57,8 @@ setup(name='genome-subsampler',
       test_suite='nose.collector',
       packages=find_packages(),
       install_requires=[
-          'click >= 6',
-          'scikit-bio >= 0.4.0',
+          'click >= 6.0',
+          'scikit-bio >= 0.5.1',
       ],
       extras_require={'test': ["nose", "pep8", "flake8"],
                       'coverage': ["coverage"]})

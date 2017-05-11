@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # ----------------------------------------------------------------------------
 # Copyright (c) 2017--, genome-subsampler development team.
 #
@@ -6,7 +8,19 @@
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-# import the parsers so they are available
+#
+# main front-end of the genome-subsampler
+#
 
-__credits__ = "https://github.com/biocore/genome-subsampler/contributors"
-__version__ = "0.1.0.dev0"
+import click
+
+
+@click.command()
+def _main():
+    """ Main front-end of the genome-subsampler
+    """
+    click.echo('Task completed.')
+
+
+if __name__ == "__main__":
+    _main()
