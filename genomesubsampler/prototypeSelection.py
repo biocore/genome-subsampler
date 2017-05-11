@@ -31,12 +31,11 @@ from itertools import combinations
 
 import numpy as np
 import scipy as sp
-from skbio.stats.distance import DistanceMatrix
 
 
 def distance_sum(elements, dm):
-    '''Compute the sum of pairwise distances for the given elements according to
-    the given distance matrix.
+    '''Compute the sum of pairwise distances for the given elements according
+    to the given distance matrix.
 
     Parameters
     ----------
@@ -187,7 +186,6 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes):
     # the first two prototypes are those elements that have the globally
     # maximal distance in the distance matrix. Mark those two elements as
     # being covered, i.e. prototypes
-    distance = dm.data.max()
     res_set = list(np.unravel_index(dm.data.argmax(), dm.data.shape))
     uncovered[res_set] = np.False_
     # counts the number of already found prototypes
@@ -346,7 +344,6 @@ def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100):
     prototypes = []
     for i in range(steps):
         oldDirection = direction
-        oldEpsilon = epsilon
 
         # increase the stepsize in each iteration to converge faster
         stepSize *= 1.1

@@ -1,13 +1,11 @@
 from unittest import TestCase, main
 
 from skbio.stats.distance import DistanceMatrix
-from skbio.stats.distance._base import (DistanceMatrixError,
-                                        DissimilarityMatrixError,
+from skbio.stats.distance._base import (DissimilarityMatrixError,
                                         MissingIDError)
 from skbio.util import get_data_path
-from skbio.io._exception import UnrecognizedFormatError
 
-from phylogeny.prototypeSelection import (
+from genomesubsampler.prototypeSelection import (
     prototype_selection_exhaustive,
     prototype_selection_constructive_maxdist,
     prototype_selection_destructive_maxdist,
