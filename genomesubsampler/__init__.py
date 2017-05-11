@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Copyright (c) 2015--, genome-subsampler development team.
+# Copyright (c) 2017--, genome-subsampler development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # ----------------------------------------------------------------------------
-# Copyright (c) 2016--, genome-subsampler development team.
+# Copyright (c) 2017--, genome-subsampler development team.
 #
 # Distributed under the terms of the Modified BSD License.
 #
