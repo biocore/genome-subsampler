@@ -30,8 +30,7 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Bio-Informatics',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.3',
-    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.6',
     'Operating System :: Unix',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
@@ -60,7 +59,7 @@ setup(name='genome-subsampler',
       packages=find_packages(),
       install_requires=[
           'click >= 6',
-          'scikit-bio >= 0.4.0',
+          'scikit-bio >= 0.5.1',
       ],
       extras_require={'test': ["nose", "pep8", "flake8"],
                       'coverage': ["coverage"]})
