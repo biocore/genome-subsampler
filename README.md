@@ -3,6 +3,3 @@
 
 # genome subsampler
 genome subsampler is coded in Python 3.x
-
-=======
-# genome-subsampler
