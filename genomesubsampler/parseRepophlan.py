@@ -17,7 +17,7 @@ import pandas as pd
 
 
 def parse_repophlan(repophlan_wscores_fp):
-    """ Extract number of HGTs found.
+    """ Compute basic statistics of RepoPhlAn-downloaded genomes
 
     Parameters
     ----------
