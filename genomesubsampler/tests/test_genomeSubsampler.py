@@ -15,20 +15,20 @@ from genomesubsampler.genomeSubsampler import _main
 
 
 class GenomeSubsamplerTests(TestCase):
-    """ Tests for genomeSubsampler.py """
+    """Tests for genomeSubsampler.py."""
 
     def setUp(self):
-        """ Create working directory and test files
+        """Create working directory and test files.
         """
         self.wkdir = mkdtemp()
 
     def tearDown(self):
-        """ Delete working directory and test files
+        """Delete working directory and test files.
         """
         rmtree(self.wkdir)
 
     def test__main(self):
-        """ Test for the main process following Click
+        """Test for the main process following Click.
         """
         params = []
         res = CliRunner().invoke(_main, params)

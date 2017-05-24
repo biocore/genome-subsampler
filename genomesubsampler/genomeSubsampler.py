@@ -17,7 +17,7 @@ import click
 
 @click.command()
 def _main():
-    """ Main front-end of the genome-subsampler
+    """Main front-end of the genome-subsampler.
     """
     click.echo('Task completed.')
 
