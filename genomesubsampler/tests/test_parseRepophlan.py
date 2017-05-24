@@ -17,42 +17,42 @@ from genomesubsampler.parseRepophlan import (parse_repophlan,
 
 
 class ParseRepophlanTests(TestCase):
-    """ Tests for parseRepophlan.py """
+    """Tests for parseRepophlan.py."""
 
     def setUp(self):
-        """ Create working directory and test files
+        """Create working directory and test files.
         """
         self.wkdir = mkdtemp()
         self.repophlan_fp = get_data_path('repophlan_microbes_wscores.txt')
 
     def tearDown(self):
-        """ Delete working directory and test files
+        """Delete working directory and test files.
         """
         rmtree(self.wkdir)
 
     def test_parse_repophlan(self):
-        """ Test function parse_repophlan
+        """Test function parse_repophlan.
         """
         obs = parse_repophlan(self.repophlan_fp)
-        exp = str_basic_stats.split('\n')
+        exp = BASIC_STATS.split('\n')
         self.assertListEqual(obs, exp)
 
     def test__main(self):
-        """ Test for the main process following Click
+        """Test for the main process following Click.
         """
         params = ['--repophlan-wscores-fp', self.repophlan_fp]
         res = CliRunner().invoke(_main, params)
         self.assertEqual(res.exit_code, 0)
-        self.assertIn(str_basic_stats, res.output)
+        self.assertIn(BASIC_STATS, res.output)
         self.assertIn('Task completed.', res.output)
 
 
-str_basic_stats = ('Total number of genomes: 9.\n'
-                   'Number of RefSeq genomes: 7.\n'
-                   'With genome sequences (fna): 9.\n'
-                   'With protein sequences (faa): 9.\n'
-                   'With protein-coding DNA sequences (ffn): 9.\n'
-                   'With RNA-coding DNA sequences (frn): 9.')
+BASIC_STATS = ('Total number of genomes: 9.\n'
+               'Number of RefSeq genomes: 7.\n'
+               'With genome sequences (fna): 9.\n'
+               'With protein sequences (faa): 9.\n'
+               'With protein-coding DNA sequences (ffn): 9.\n'
+               'With RNA-coding DNA sequences (frn): 9.')
 
 if __name__ == '__main__':
     main()

@@ -17,17 +17,17 @@ import pandas as pd
 
 
 def parse_repophlan(repophlan_wscores_fp):
-    """ Compute basic statistics of RepoPhlAn-downloaded genomes
+    """Compute basic statistics of RepoPhlAn-downloaded genomes.
 
     Parameters
     ----------
-    repophlan_wscores_fp: string
-        file path to RepoPhlAn summary table with scores
+    repophlan_wscores_fp : str
+        File path to RepoPhlAn summary table with scores.
 
     Returns
     -------
-    list of string
-        Human-readable report of basic statistics of genomes
+    list of str
+        Human-readable report of basic statistics of genomes.
     """
     df = pd.read_table(repophlan_wscores_fp, index_col=0, header=0)
     out = []
@@ -49,7 +49,7 @@ def parse_repophlan(repophlan_wscores_fp):
                               file_okay=True),
               help='RepoPhlAn summary table with scores')
 def _main(repophlan_wscores_fp):
-    """ Parser for RepoPhlAn-downloaded genomes
+    """Parser for RepoPhlAn-downloaded genomes.
     """
     out = parse_repophlan(repophlan_wscores_fp)
     click.echo('\n'.join(out))
