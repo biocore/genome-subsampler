@@ -3,7 +3,7 @@
 #
 # Distributed under the terms of the Modified BSD License.
 #
-# The full license is in the file COPYING.txt, distributed with this software.
+# The full license is in the file LICENSE, distributed with this software.
 # ----------------------------------------------------------------------------
 
 from unittest import TestCase, main
@@ -14,6 +14,7 @@ from skbio.stats.distance._base import (DissimilarityMatrixError,
 from skbio.util import get_data_path
 
 from genomesubsampler.prototypeSelection import (
+    _validate_parameters,
     prototype_selection_exhaustive,
     prototype_selection_constructive_maxdist,
     prototype_selection_destructive_maxdist,
@@ -27,6 +28,56 @@ class prototypeSelection(TestCase):
     def setUp(self):
         self.dm100 = DistanceMatrix.read(get_data_path('distMatrix_100.txt'))
         self.dm20 = DistanceMatrix.read(get_data_path('distMatrix_20_f5.txt'))
+
+    def test__validate_parameters(self):
+        # test that number of prototypes cannot be smaller than 2
+        self.assertRaisesRegex(
+            ValueError,
+            ("'num_prototypes' must be >= 2, since a single prototype is "
+             "useless."),
+            _validate_parameters,
+            self.dm20,
+            1)
+
+        # test that number of prototypes cannot be greater than size of
+        # distance matrix
+        self.assertRaisesRegex(
+            ValueError,
+            ("'num_prototypes' must be smaller than the number of elements "
+             "in the distance matrix, otherwise no reduction is necessary."),
+            _validate_parameters,
+            self.dm20,
+            30)
+
+        # test that seed set cannot contain duplicated IDs
+        self.assertRaisesRegex(
+            ValueError,
+            "There are duplicated IDs in 'seedset'.",
+            _validate_parameters,
+            self.dm20,
+            5,
+            ['A', 'B', 'B'])
+
+        # test that seed set cannot contain IDs absent in distance matrix
+        self.assertRaisesRegex(
+            ValueError,
+            ("'seedset' is not a subset of the element IDs in the distance "
+             "matrix."),
+            _validate_parameters,
+            self.dm20,
+            5,
+            ['A', 'B', '_'])
+
+        # test that size of seed set cannot be larger than number of
+        # prototypes to be found
+        self.assertRaisesRegex(
+            ValueError,
+            ("Size of 'seedset' must be smaller than the number of "
+             "prototypes to select, otherwise no selection is necessary."),
+            _validate_parameters,
+            self.dm20,
+            3,
+            ['A', 'B', 'C', 'D'])
 
     def test_distance_sum(self):
         # test that no missing IDs can be used
@@ -352,7 +403,7 @@ class prototypeSelection(TestCase):
             res)
         self.assertAlmostEqual(101.104980832350, distance_sum(res, self.dm100))
 
-    def test_protoclass(self):
+    def test__protoclass(self):
         res = _protoclass(self.dm20, 0.42)
         self.assertCountEqual(('D', 'Q', 'A'), res)
         self.assertAlmostEqual(1.7409, distance_sum(res, self.dm20))
@@ -490,6 +541,21 @@ class prototypeSelection(TestCase):
         # test seedset function, first include elements that are supposed to
         # be selected, to see if result is identical
         seedset = set(['A', 'P'])
+        res = prototype_selection_exhaustive(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'P', 'T', 'C', 'O'), res)
+        self.assertAlmostEqual(5.4494, distance_sum(res, self.dm20))
+
+        seedset = set(['A', 'P'])
+        res = prototype_selection_constructive_maxdist(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'P', 'Q', 'C', 'O'), res)
+        self.assertAlmostEqual(5.4480, distance_sum(res, self.dm20))
+
+        seedset = set(['A', 'H'])
+        res = prototype_selection_constructive_pMedian(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'H', 'Q', 'E', 'I'), res)
+        self.assertAlmostEqual(5.1449, distance_sum(res, self.dm20))
+
+        seedset = set(['A', 'P'])
         res = prototype_selection_destructive_maxdist(self.dm20, 5, seedset)
         self.assertCountEqual(('A', 'P', 'T', 'C', 'O'), res)
         self.assertAlmostEqual(5.4494, distance_sum(res, self.dm20))
@@ -497,12 +563,49 @@ class prototypeSelection(TestCase):
         # then include different elements, to see result changes, and score
         # (sum of distances) slightly drops.
         seedset = ['G', 'I']
+        res = prototype_selection_exhaustive(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'G', 'I', 'C', 'T'), res)
+        self.assertAlmostEqual(5.3091, distance_sum(res, self.dm20))
+
+        seedset = ['G', 'I']
+        res = prototype_selection_constructive_maxdist(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'G', 'I', 'C', 'T'), res)
+        self.assertAlmostEqual(5.3091, distance_sum(res, self.dm20))
+
+        seedset = ['G', 'T']
+        res = prototype_selection_constructive_pMedian(self.dm20, 5, seedset)
+        self.assertCountEqual(('A', 'G', 'E', 'H', 'T'), res)
+        self.assertAlmostEqual(5.2263, distance_sum(res, self.dm20))
+
+        seedset = ['G', 'I']
         res = prototype_selection_destructive_maxdist(self.dm20, 5, seedset)
         self.assertCountEqual(('A', 'G', 'I', 'K', 'T'), res)
         self.assertAlmostEqual(5.3082, distance_sum(res, self.dm20))
 
+        # test on the n=100 distance matrix
         seedset = ['550.L1S18.s.1.sequence', '550.L1S142.s.1.sequence',
                    '550.L1S176.s.1.sequence']
+
+        res = prototype_selection_constructive_maxdist(self.dm100, 10, seedset)
+        self.assertCountEqual(
+            ('550.L1S1.s.1.sequence', '550.L1S15.s.1.sequence',
+             '550.L1S18.s.1.sequence', '550.L1S129.s.1.sequence',
+             '550.L1S115.s.1.sequence', '550.L1S136.s.1.sequence',
+             '550.L1S142.s.1.sequence', '550.L1S176.s.1.sequence',
+             '550.L1S178.s.1.sequence', '550.L1S189.s.1.sequence'),
+            res)
+        self.assertAlmostEqual(26.7929168423, distance_sum(res, self.dm100))
+
+        res = prototype_selection_constructive_pMedian(self.dm100, 10, seedset)
+        self.assertCountEqual(
+            ('550.L1S117.s.1.sequence', '550.L1S18.s.1.sequence',
+             '550.L1S12.s.1.sequence', '550.L1S163.s.1.sequence',
+             '550.L1S149.s.1.sequence', '550.L1S185.s.1.sequence',
+             '550.L1S133.s.1.sequence', '550.L1S126.s.1.sequence',
+             '550.L1S176.s.1.sequence', '550.L1S142.s.1.sequence'),
+            res)
+        self.assertAlmostEqual(23.9872385276, distance_sum(res, self.dm100))
+
         res = prototype_selection_destructive_maxdist(self.dm100, 10, seedset)
         self.assertCountEqual(
             ('550.L1S1.s.1.sequence', '550.L1S15.s.1.sequence',
@@ -512,14 +615,6 @@ class prototypeSelection(TestCase):
              '550.L1S176.s.1.sequence', '550.L1S189.s.1.sequence'),
             res)
         self.assertAlmostEqual(26.7457727563, distance_sum(res, self.dm100))
-
-        self.assertRaisesRegex(
-            MissingIDError,
-            "The ID 'X' is not in the dissimilarity matrix.",
-            prototype_selection_destructive_maxdist,
-            self.dm20,
-            5,
-            set(['A', 'X']))
 
 
 if __name__ == '__main__':
