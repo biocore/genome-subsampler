@@ -72,8 +72,8 @@ class prototypeSelection(TestCase):
         # prototypes to be found
         self.assertRaisesRegex(
             ValueError,
-            ("Size of 'seedset' must be smaller than the number of "
-             "prototypes to select, otherwise no selection is necessary."),
+            ("Size of 'seedset' must be smaller than the number of prototypes "
+             "to select."),
             _validate_parameters,
             self.dm20,
             3,

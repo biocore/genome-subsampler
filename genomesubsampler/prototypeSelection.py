@@ -54,11 +54,9 @@ def _validate_parameters(dm, num_prototypes, seedset=[]):
         Must be smaller than the number of elements in the distance matrix,
         otherwise no reduction is necessary.
     seedset: iterable of str
-        A set of element IDs that are preferably selected for the resulting
-        set. Must be smaller than the number of prototypes to select. All get
-        selected first, after which the algorithms will operate based on them.
-        Warning: It will most likely violate the global objective function to
-        pre-select elements.
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Raises
     ------
@@ -82,13 +80,12 @@ def _validate_parameters(dm, num_prototypes, seedset=[]):
         seeds = set(seedset)
         if len(seeds) < len(seedset):
             raise ValueError("There are duplicated IDs in 'seedset'.")
-        if not seeds < set(dm.ids):
+        if not seeds < set(dm.ids):  # test if set A is a subset of set B
             raise ValueError("'seedset' is not a subset of the element IDs in "
                              "the distance matrix.")
         if len(seeds) >= num_prototypes:
             raise ValueError("Size of 'seedset' must be smaller than the "
-                             "number of prototypes to select, otherwise no "
-                             "selection is necessary.")
+                             "number of prototypes to select.")
 
 
 def distance_sum(elements, dm):
@@ -129,11 +126,9 @@ def prototype_selection_exhaustive(dm, num_prototypes, seedset=[],
         Must be smaller than the number of elements in the distance matrix,
         otherwise no reduction is necessary.
     seedset: iterable of str
-        A set of element IDs that are preferably selected for the resulting
-        set. Must be smaller than the number of prototypes to select. All get
-        selected first, after which the algorithms will operate based on them.
-        Warning: It will most likely violate the global objective function to
-        pre-select elements.
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
     max_combinations_to_test: int
         The maximal number of combinations to test. If exceeding, the function
         declines execution.
@@ -210,11 +205,9 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes, seedset=[]):
         Must be smaller than the number of elements in the distance matrix,
         otherwise no reduction is necessary.
     seedset: iterable of str
-        A set of element IDs that are preferably selected for the resulting
-        set. Must be smaller than the number of prototypes to select. All get
-        selected first, after which the algorithms will operate based on them.
-        Warning: It will most likely violate the global objective function to
-        pre-select elements.
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Returns
     -------
@@ -247,8 +240,8 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes, seedset=[]):
     if len(seedset):
         # mark elements in the seedset as found
         seedset = set(seedset)
-        for idx, id in enumerate(dm.ids):
-            if id in seedset:
+        for idx, id_ in enumerate(dm.ids):
+            if id_ in seedset:
                 uncovered[idx] = np.False_
                 res_set.append(idx)
     else:
@@ -456,11 +449,9 @@ def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
         Must be smaller than the number of elements in the distance matrix,
         otherwise no reduction is necessary.
     seedset: iterable of str
-        A set of element IDs that are preferably selected for the resulting
-        set. Must be smaller than the number of prototypes to select. All get
-        selected first, after which the algorithms will operate based on them.
-        Warning: It will most likely violate the global objective function to
-        pre-select elements.
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Returns
     -------
@@ -495,8 +486,8 @@ def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
 
     if len(seedset):
         # pre-populate the prototype list with seeds
+        prototypes = [(dm.ids).index(x) for x in seedset]
         seedset = set(seedset)
-        prototypes = [idx for idx, id in enumerate(dm.ids) if id in seedset]
     else:
         # add the one element whose distance is smallest to all other elements
         # as the first prototype.
@@ -536,11 +527,9 @@ def prototype_selection_destructive_maxdist(dm, num_prototypes, seedset=[]):
         Must be smaller than the number of elements in the distance matrix,
         otherwise no reduction is necessary.
     seedset: iterable of str
-        A set of element IDs that are preferably selected for the resulting
-        set. Must be smaller than the number of prototypes to select. All get
-        selected first, after which the algorithms will operate based on them.
-        Warning: It will most likely violate the global objective function to
-        pre-select elements.
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Returns
     -------
