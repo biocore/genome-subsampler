@@ -530,7 +530,7 @@ def prototype_selection_destructive_maxdist(dm, num_prototypes,
     # other. "Removing" works by tagging its distance-sum as infinity. Plus, we
     # decrease the number of available elements by one.
     minElmIdx = currDists.argmin()
-    currDists[minElmIdx], numRemain = np.infty, numRemain-1
+    currDists[minElmIdx], numRemain = np.infty, numRe -1
 
     # continue until only num_prototype elements are left
     while (numRemain > num_prototypes):
