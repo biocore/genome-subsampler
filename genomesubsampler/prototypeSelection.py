@@ -41,7 +41,7 @@ import numpy as np
 import scipy as sp
 
 
-def _validate_parameters(dm, num_prototypes, seedset=[]):
+def _validate_parameters(dm, num_prototypes, seedset=None):
     '''Validate the paramters for each algorithm.
 
     Parameters
@@ -76,7 +76,7 @@ def _validate_parameters(dm, num_prototypes, seedset=[]):
         raise ValueError("'num_prototypes' must be smaller than the number of "
                          "elements in the distance matrix, otherwise no "
                          "reduction is necessary.")
-    if len(seedset) > 0:
+    if seedset is not None:
         seeds = set(seedset)
         if len(seeds) < len(seedset):
             raise ValueError("There are duplicated IDs in 'seedset'.")
@@ -112,7 +112,7 @@ def distance_sum(elements, dm):
     return np.tril(dm.filter(elements).data).sum()
 
 
-def prototype_selection_exhaustive(dm, num_prototypes, seedset=[],
+def prototype_selection_exhaustive(dm, num_prototypes, seedset=None,
                                    max_combinations_to_test=200000):
     '''Select k prototypes for given distance matrix
 
@@ -166,8 +166,13 @@ def prototype_selection_exhaustive(dm, num_prototypes, seedset=[],
     '''
     _validate_parameters(dm, num_prototypes, seedset)
 
-    ids = set(dm.ids) - set(seedset)
-    num_prototypes = num_prototypes - len(seedset)
+    ids = set(dm.ids)
+    if seedset is not None:
+        ids = ids - set(seedset)
+        num_prototypes = num_prototypes - len(seedset)
+        seedset = tuple(seedset)
+    else:
+        seedset = ()
     num_combinations = sp.special.binom(len(ids), num_prototypes)
     if num_combinations >= max_combinations_to_test:
         raise RuntimeError(("Cowardly refuse to test %i combinations. Use a "
@@ -175,7 +180,6 @@ def prototype_selection_exhaustive(dm, num_prototypes, seedset=[],
                             "than %i combinations instead!")
                            % (num_combinations, max_combinations_to_test))
 
-    seedset = tuple(seedset)
     max_dist, max_set = -1 * np.infty, None
     for s in set(combinations(ids, num_prototypes)):
         d = distance_sum(s + seedset, dm)
@@ -229,7 +233,7 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes, seedset=[]):
             where the dm holds 27,398 elements
     function signature with type annotation for future use with python >= 3.5:
     def prototype_selection_constructive_maxdist(dm: DistanceMatrix,
-    num_prototypes: int) -> List[str]:
+    num_prototypes: int, seedset: List[str]) -> List[str]:
     '''
     _validate_parameters(dm, num_prototypes, seedset)
 
@@ -237,7 +241,7 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes, seedset=[]):
     uncovered = np.asarray([np.True_] * dm.shape[0])
     res_set, num_found_prototypes = [], 0
 
-    if len(seedset):
+    if seedset is not None:
         # mark elements in the seedset as found
         seedset = set(seedset)
         for idx, id_ in enumerate(dm.ids):
@@ -427,7 +431,7 @@ def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100):
     return list(prototypes[:num_prototypes])
 
 
-def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
+def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=None):
     '''Heuristically select k prototypes for given distance matrix.
 
        Prototype selection is NP-hard. This is an implementation of a greedy
@@ -473,7 +477,7 @@ def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
             where the dm holds 27,398 elements
     function signature with type annotation for future use with python >= 3.5:
     def prototype_selection_constructive_protoclass(dm: DistanceMatrix,
-    num_prototypes: int) -> List[str]:
+    num_prototypes: int, seedset: List[str]) -> List[str]:
 
     [1] Desire L. Massart, Frank Plastria and Leonard Kaufman.
         "Non-hierarchical clustering with MASLOC"
@@ -484,7 +488,7 @@ def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
     # start with an empty list of prototypes
     prototypes = []
 
-    if len(seedset):
+    if seedset is not None:
         # pre-populate the prototype list with seeds
         prototypes = [(dm.ids).index(x) for x in seedset]
         seedset = set(seedset)
@@ -508,7 +512,7 @@ def prototype_selection_constructive_pMedian(dm, num_prototypes, seedset=[]):
     return [dm.ids[idx] for idx in prototypes]
 
 
-def prototype_selection_destructive_maxdist(dm, num_prototypes, seedset=[]):
+def prototype_selection_destructive_maxdist(dm, num_prototypes, seedset=None):
     '''Heuristically select k prototypes for given distance matrix.
 
        Prototype selection is NP-hard. This is an implementation of a greedy
@@ -551,7 +555,7 @@ def prototype_selection_destructive_maxdist(dm, num_prototypes, seedset=[]):
             where the dm holds 27,398 elements
     function signature with type annotation for future use with python >= 3.5:
     def prototype_selection_constructive_maxdist(dm: DistanceMatrix,
-    num_prototypes: int) -> List[str]:
+    num_prototypes: int, seedset: List[str]) -> List[str]:
     '''
     _validate_parameters(dm, num_prototypes, seedset)
 
@@ -566,8 +570,9 @@ def prototype_selection_destructive_maxdist(dm, num_prototypes, seedset=[]):
     # a dirty hack to ensure that all elements of the seedset will be selected
     # last and thus make it into the resulting set
     maxVal = currDists.max()
-    for e in seedset:
-        currDists[dm.index(e)] = maxVal*2
+    if seedset is not None:
+        for e in seedset:
+            currDists[dm.index(e)] = maxVal*2
 
     # the element to remove first is the one that has smallest distance to all
     # other. "Removing" works by tagging its distance-sum as infinity. Plus, we

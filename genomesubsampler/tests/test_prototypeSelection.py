@@ -39,6 +39,14 @@ class prototypeSelection(TestCase):
             self.dm20,
             1)
 
+        self.assertRaisesRegex(
+            ValueError,
+            ("'num_prototypes' must be >= 2, since a single prototype is "
+             "useless."),
+            _validate_parameters,
+            self.dm20,
+            1, [])
+
         # test that number of prototypes cannot be greater than size of
         # distance matrix
         self.assertRaisesRegex(
