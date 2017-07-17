@@ -6,13 +6,13 @@
 # The full license is in the file COPYING.txt, distributed with this software.
 # ----------------------------------------------------------------------------
 
-import pandas as pd
-
 from unittest import TestCase, main
-from click.testing import CliRunner
+from os.path import join
 from tempfile import mkdtemp
-from skbio.util import get_data_path
 from shutil import rmtree
+import pandas as pd
+from click.testing import CliRunner
+from skbio.util import get_data_path
 from genomesubsampler.filterRepophlan import (
     calc_norm_score, calc_avg_score, _main)
 
@@ -25,11 +25,12 @@ class filterRepophlan(TestCase):
         """
         self.wkdir = mkdtemp()
         self.repophlan_fp = get_data_path('repophlan_microbes_wscores.txt')
+        self.repophlan_good_fp = get_data_path('repophlan_filter.good')
+        self.repophlan_bad_fp = get_data_path('repophlan_filter.bad')
         self.score_threshold = 0.8
-        self.output_fp = './repoplan_filepaths'
+        self.output_fp = join(self.wkdir, 'output')
         self.score_cols = 'score_faa,score_fna,score_rrna,score_trna'
         self.fp_cols = 'faa_lname,ffn_lname,fna_lname,frn_lname'
-        self.avg = 'score_avg'
 
     def tearDown(self):
         """ Delete working directory and test files.
@@ -131,14 +132,23 @@ class filterRepophlan(TestCase):
     def test__main(self):
         """ test for the main process following Click.
         """
-        params = [['--repophlan_fp', self.repophlan_fp],
-                  ['--score_threshold', self.score_threshold],
-                  ['--output_fp', self.output_fp],
-                  ['--score_cols', self.score_cols],
-                  ['--fp_cols', self.fp_cols],
-                  ['--avg', self.avg]]
+        params = ['--repophlan_fp', self.repophlan_fp,
+                  '--score_threshold', self.score_threshold,
+                  '--output_fp', self.output_fp,
+                  '--score_cols', self.score_cols,
+                  '--fp_cols', self.fp_cols]
         res = CliRunner().invoke(_main, params)
-        self.assertEqual(res.exit_code, -1)
+        self.assertEqual(res.exit_code, 0)
+        with open('%s.good' % self.output_fp, 'r') as f:
+          obs = f.read()
+        with open(self.repophlan_good_fp, 'r') as f:
+          exp = f.read()
+        self.assertEqual(obs, exp)
+        with open('%s.bad' % self.output_fp, 'r') as f:
+          obs = f.read()
+        with open(self.repophlan_bad_fp, 'r') as f:
+          exp = f.read()
+        self.assertEqual(obs, exp)
 
 
 if __name__ == '__main__':

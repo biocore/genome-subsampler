@@ -58,7 +58,7 @@ def calc_avg_score(genome_df, cols=['score_faa',
               help='score threshold to include in good file \
                    (default: %(default)s)')
 @click.option('-o', '--output_fp',
-              type=str, default='./repophlan_filepaths', show_default=True,
+              type=str, default='./output', show_default=True,
               help='path for output (will output [output_fp].good and \
                  [output_fp].bad; default: %(default)s)')
 @click.option('-c', '--score_cols',
