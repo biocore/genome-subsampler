@@ -324,7 +324,7 @@ def _protoclass(dm, epsilon, seedset=None):
     # which is later consumed by the while loop.
     seeds = []
     if seedset is not None:
-        seeds = seedset
+        seeds = list(seedset)
 
     while True:
         # candidate for a new prototype is the element whose epsilon ball
