@@ -330,14 +330,15 @@ def _protoclass(dm, epsilon, seedset=None):
         # candidate for a new prototype is the element whose epsilon ball
         # covers most other elements.
         idx_max = scores.argmax()
-        # if a seedset is give, the best candidate is not the above, but an
-        # element of the seedset. This is repeated until all elements of the
-        # seedsets have been consumed. The loop then defaults to the normal
-        # routine, i.e. uses the scores.argmax() element as the next prototype
-        if len(seeds) > 0:
-            idx_max = dm.ids.index(seeds[0])
-            seeds = seeds[1:]
-        if (scores[idx_max] > 0):
+        if (scores[idx_max] > 0) or (len(seeds) > 0):
+            if len(seeds) > 0:
+                # if a seedset is give, the best candidate is not the above,
+                # but an element of the seedset. This is repeated until all
+                # elements of the seedsets have been consumed. The loop then
+                # defaults to the normal routine, i.e. uses the scores.argmax()
+                # element as the next prototype
+                idx_max = dm.ids.index(seeds[0])
+                seeds = seeds[1:]
             # candidate is new prototype, add it to the list
             prototypes.append(idx_max)
             # which elements have been just covered by the new prototype
