@@ -471,6 +471,14 @@ class prototypeSelection(TestCase):
             res)
         self.assertAlmostEqual(101.91549799314, distance_sum(res, self.dm100))
 
+        # test seedset function, i.e. are 'A' and 'B' included in prototypes
+        res = _protoclass(self.dm20, 0.405, seedset=['A', 'B'])
+        self.assertCountEqual(res, ['A', 'B', 'D', 'Q'])
+
+        # test if at least one seed element is returned for too high epsilon
+        res = _protoclass(self.dm20, 0.805, seedset=['A', 'B'])
+        self.assertCountEqual(res, ['A', 'B'])
+
     def test_prototype_selection_constructive_pMedian(self):
         self.assertRaisesRegex(
             ValueError,
