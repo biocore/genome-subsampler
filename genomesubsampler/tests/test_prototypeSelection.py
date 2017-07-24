@@ -471,6 +471,14 @@ class prototypeSelection(TestCase):
             res)
         self.assertAlmostEqual(101.91549799314, distance_sum(res, self.dm100))
 
+        # test seedset function, i.e. are 'A' and 'B' included in prototypes
+        res = _protoclass(self.dm20, 0.405, seedset=['A', 'B'])
+        self.assertCountEqual(res, ['A', 'B', 'D', 'Q'])
+
+        # test if at least one seed element is returned for too high epsilon
+        res = _protoclass(self.dm20, 0.805, seedset=['A', 'B'])
+        self.assertCountEqual(res, ['A', 'B'])
+
     def test_prototype_selection_constructive_pMedian(self):
         self.assertRaisesRegex(
             ValueError,
@@ -568,6 +576,12 @@ class prototypeSelection(TestCase):
         self.assertCountEqual(('A', 'P', 'T', 'C', 'O'), res)
         self.assertAlmostEqual(5.4494, distance_sum(res, self.dm20))
 
+        seedset = set(['H', 'C'])
+        res = prototype_selection_constructive_protoclass(
+            self.dm20, 5, seedset=seedset)
+        self.assertCountEqual(('H', 'C', 'Q', 'A', 'G'), res)
+        self.assertAlmostEqual(5.2747, distance_sum(res, self.dm20))
+
         # then include different elements, to see result changes, and score
         # (sum of distances) slightly drops.
         seedset = ['G', 'I']
@@ -589,6 +603,12 @@ class prototypeSelection(TestCase):
         res = prototype_selection_destructive_maxdist(self.dm20, 5, seedset)
         self.assertCountEqual(('A', 'G', 'I', 'K', 'T'), res)
         self.assertAlmostEqual(5.3082, distance_sum(res, self.dm20))
+
+        seedset = set(['G', 'I'])
+        res = prototype_selection_constructive_protoclass(
+            self.dm20, 5, seedset=seedset)
+        self.assertCountEqual(('I', 'G', 'B', 'Q', 'A'), res)
+        self.assertAlmostEqual(5.1918, distance_sum(res, self.dm20))
 
         # test on the n=100 distance matrix
         seedset = ['550.L1S18.s.1.sequence', '550.L1S142.s.1.sequence',

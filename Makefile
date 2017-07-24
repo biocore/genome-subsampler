@@ -22,7 +22,7 @@ help:
 test:
 	$(TEST_COMMAND)
 pep8:
-	flake8 genome-subsampler setup.py
+	flake8 genomesubsampler setup.py
 html:
 	make -C doc clean html
 

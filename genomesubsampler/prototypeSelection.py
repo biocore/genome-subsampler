@@ -271,7 +271,7 @@ def prototype_selection_constructive_maxdist(dm, num_prototypes, seedset=None):
     return [dm.ids[idx] for idx, x in enumerate(uncovered) if not x]
 
 
-def _protoclass(dm, epsilon):
+def _protoclass(dm, epsilon, seedset=None):
     '''Heuristically select n prototypes for a fixed epsilon radius.
 
        A ball is drawn around every element in the distance matrix with radius
@@ -289,6 +289,10 @@ def _protoclass(dm, epsilon):
     epsilon: float
         Radius for the balls to be "drawn". As a rule of thumb, the larger
         epsilon, the less prototypes are found.
+    seedset: iterable of str
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Returns
     -------
@@ -316,11 +320,25 @@ def _protoclass(dm, epsilon):
     # found prototypes
     prototypes = []
 
+    # if we have a non empty seedset, we create a new list of those elements
+    # which is later consumed by the while loop.
+    seeds = []
+    if seedset is not None:
+        seeds = list(seedset)
+
     while True:
         # candidate for a new prototype is the element whose epsilon ball
         # covers most other elements.
         idx_max = scores.argmax()
-        if (scores[idx_max] > 0):
+        if (scores[idx_max] > 0) or (len(seeds) > 0):
+            if len(seeds) > 0:
+                # if a seedset is give, the best candidate is not the above,
+                # but an element of the seedset. This is repeated until all
+                # elements of the seedsets have been consumed. The loop then
+                # defaults to the normal routine, i.e. uses the scores.argmax()
+                # element as the next prototype
+                idx_max = dm.ids.index(seeds[0])
+                seeds = seeds[1:]
             # candidate is new prototype, add it to the list
             prototypes.append(idx_max)
             # which elements have been just covered by the new prototype
@@ -336,7 +354,8 @@ def _protoclass(dm, epsilon):
     return np.array(dm.ids)[prototypes]
 
 
-def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100):
+def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100,
+                                                seedset=None):
     '''Heuristically select k prototypes for given distance matrix.
 
        Prototype selection is NP-hard. This is an implementation of a greedy
@@ -361,6 +380,10 @@ def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100):
         otherwise no reduction is necessary.
     steps: int
         Maximal number of steps used to find a suitable epsilon.
+    seedset: iterable of str
+        A set of element IDs that are pre-selected as prototypes. Remaining
+        prototypes are then recruited with the prototype selection algorithm.
+        Warning: It will most likely violate the global objective function.
 
     Returns
     -------
@@ -409,7 +432,7 @@ def prototype_selection_constructive_protoclass(dm, num_prototypes, steps=100):
         # increase the stepsize in each iteration to converge faster
         stepSize *= 1.1
         # call the protoclass with a defined epsilon
-        prototypes = _protoclass(dm, epsilon)
+        prototypes = _protoclass(dm, epsilon, seedset)
         # check if direction of epsilon changes has changed
         if len(prototypes) > num_prototypes:
             direction = +1
