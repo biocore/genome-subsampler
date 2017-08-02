@@ -43,7 +43,7 @@ def compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1):
             elif fname.endswith('.fna'):
                 call('ln -s %s %s' % (fpath, g), shell=True)
             call('mash sketch %s' % g, shell=True)
-            call('rm %s' % g, shell=True)
+            call('rm %s' % g, shell=True) #remove after writing?
             fh.write('%s\n' % g)
 
     # paste sketches in one file

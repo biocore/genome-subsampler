@@ -46,6 +46,7 @@ class MashDistanceTests(TestCase):
         with gzip.open(self.mash_dist_fp, 'r') as fh:
             exp = fh.read()
         self.assertEqual(obs, exp)
+        os.remove('genomes.dist.gz')
 
     def test_make_distance_matrix(self):
         """Test the output of function "make_distance_matrix".
@@ -56,7 +57,7 @@ class MashDistanceTests(TestCase):
         with open(self.dist_mat_fp, 'r') as fh:
             exp = fh.read()
         self.assertEqual(obs, exp)
-
+        os.remove('dist_matrix.txt')
 
 if __name__ == '__main__':
     main()
