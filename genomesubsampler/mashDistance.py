@@ -16,7 +16,9 @@ import gzip
 from subprocess import call
 import click
 
-def compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1):
+
+def compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1,
+                          keep_msh=False):
     """Compute pairwise MinHash distances between genomes in a given path.
 
     Parameters
@@ -43,20 +45,24 @@ def compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1):
             elif fname.endswith('.fna'):
                 call('ln -s %s %s' % (fpath, g), shell=True)
             call('mash sketch %s' % g, shell=True)
-            call('rm %s' % g, shell=True) #remove after writing?
+            call('rm %s' % g, shell=True)
             fh.write('%s\n' % g)
 
     # paste sketches in one file
     call('sed "s/$/.msh/" genomes.txt  > genome_mshs.txt', shell=True)
     os.remove('genomes.txt')
-    call('mash paste -l genomes.msh genome_mshs.txt', shell=True)
+    call('mash paste -l all_genomes.msh genome_mshs.txt', shell=True)
     # call('rm genome_mshs.txt', shell=True)
     os.remove('genome_mshs.txt')
-
     # compute pairwise distances based on sketches
-    call('mash dist -p %s genomes.msh genomes.msh | gzip > %s'
+    call('mash dist -p %s all_genomes.msh all_genomes.msh | gzip > %s'
          % (cpus, mash_dist_fp), shell=True)
-    os.remove('genomes.msh')
+    os.remove('all_genomes.msh')
+    if not keep_msh:
+        mshfiles = os.listdir('.')
+        for msh in mshfiles:
+            if msh.endswith('.msh'):
+                os.remove(msh)
 
 
 def make_distance_matrix(mash_dist_fp, dist_mat_fp):
@@ -131,12 +137,14 @@ def make_distance_matrix(mash_dist_fp, dist_mat_fp):
               type=click.Path(resolve_path=True, readable=True, exists=True,
                               dir_okay=True, file_okay=False),
               help='Directory containing input genomes')
-def _main(repophlan_wscores_fp):
-    """Calculate MinHash distances for input genomes.
+def _main(genome_dir, mash_dist_fp, dist_mat_fp, genome_ext='fna', cpus=1):
+    """Computing MinHash distances between genomes.
     """
-    out = parse_repophlan(repophlan_wscores_fp)
-    click.echo('\n'.join(out))
+    compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1,
+                          keep_msh=False)
+    make_distance_matrix(mash_dist_fp, dist_mat_fp)
     click.echo('Task completed.')
+
 
 if __name__ == "__main__":
     _main()

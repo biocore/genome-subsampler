@@ -38,7 +38,7 @@ class MashDistanceTests(TestCase):
         rmtree(self.wkdir)
 
     def test_compute_mash_distance(self):
-        """Test the output of function "compute_mash_distance".
+        """Test the output of function "compute_mash_distance.
         """
         compute_mash_distance(self.genome_dir, self.out_mash_dist_fp)
         with gzip.open(self.out_mash_dist_fp, 'r') as fh:
@@ -46,10 +46,9 @@ class MashDistanceTests(TestCase):
         with gzip.open(self.mash_dist_fp, 'r') as fh:
             exp = fh.read()
         self.assertEqual(obs, exp)
-        os.remove('genomes.dist.gz')
 
     def test_make_distance_matrix(self):
-        """Test the output of function "make_distance_matrix".
+        """Test the output of function "make_distance_matrix.
         """
         make_distance_matrix(self.mash_dist_fp, self.out_dist_mat_fp)
         with open(self.out_dist_mat_fp, 'r') as fh:
@@ -57,7 +56,7 @@ class MashDistanceTests(TestCase):
         with open(self.dist_mat_fp, 'r') as fh:
             exp = fh.read()
         self.assertEqual(obs, exp)
-        os.remove('dist_matrix.txt')
+
 
 if __name__ == '__main__':
     main()
