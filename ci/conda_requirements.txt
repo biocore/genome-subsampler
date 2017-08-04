@@ -3,3 +3,4 @@ pep8
 flake8
 scikit-bio>=0.5.1
 click>=6.0
+mash

@@ -137,11 +137,11 @@ def make_distance_matrix(mash_dist_fp, dist_mat_fp):
               type=click.Path(resolve_path=True, readable=True, exists=True,
                               dir_okay=True, file_okay=False),
               help='Directory containing input genomes')
-def _main(genome_dir, mash_dist_fp, dist_mat_fp, genome_ext='fna', cpus=1):
+@click.option('--keep_msh', is_flag=True, help='Keep ".msh" files')
+def _main(genome_dir, mash_dist_fp, dist_mat_fp, genome_ext, cpus, keep_msh):
     """Computing MinHash distances between genomes.
     """
-    compute_mash_distance(genome_dir, mash_dist_fp, genome_ext='fna', cpus=1,
-                          keep_msh=False)
+    compute_mash_distance(genome_dir, mash_dist_fp, genome_ext, cpus, keep_msh)
     make_distance_matrix(mash_dist_fp, dist_mat_fp)
     click.echo('Task completed.')
 
