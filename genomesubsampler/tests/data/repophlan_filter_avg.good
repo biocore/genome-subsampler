@@ -1,0 +1,10 @@
+#genome	faa_lname	ffn_lname	fna_lname	frn_lname	score_faa	score_fna	score_rrna	score_trna	score_avg
+G000007525	microbes/faa/G000007525.faa.bz2	microbes/ffn/G000007525.ffn.bz2	microbes/fna/G000007525.fna.bz2	microbes/frn/G000007525.frn.bz2	1.0	0.996	0.9	1	0.974
+G000010305	microbes/faa/G000010305.faa.bz2	microbes/ffn/G000010305.ffn.bz2	microbes/fna/G000010305.fna.bz2	microbes/frn/G000010305.frn.bz2	1.0	1.0	1.0	1	1.0
+G000010365	microbes/faa/G000010365.faa.bz2	microbes/ffn/G000010365.ffn.bz2	microbes/fna/G000010365.fna.bz2	microbes/frn/G000010365.frn.bz2	0.72	1.0	0.9	1	0.905
+G000018865	microbes/faa/G000018865.faa.bz2	microbes/ffn/G000018865.ffn.bz2	microbes/fna/G000018865.fna.bz2	microbes/frn/G000018865.frn.bz2	1.0	1.0	1.0	1	1.0
+G000441575	microbes/faa/G000441575.faa.bz2	microbes/ffn/G000441575.ffn.bz2	microbes/fna/G000441575.fna.bz2	microbes/frn/G000441575.frn.bz2	0.73	1.0	0.9	1	0.9075
+G000025185	microbes/faa/G000025185.faa.bz2	microbes/ffn/G000025185.ffn.bz2	microbes/fna/G000025185.fna.bz2	microbes/frn/G000025185.frn.bz2	1.0	1.0	0.9	1	0.975
+G000158275	microbes/faa/G000158275.faa.bz2	microbes/ffn/G000158275.ffn.bz2	microbes/fna/G000158275.fna.bz2	microbes/frn/G000158275.frn.bz2	1.0	0.996	1.0	1	0.999
+G000011545	microbes/faa/G000011545.faa.bz2	microbes/ffn/G000011545.ffn.bz2	microbes/fna/G000011545.fna.bz2	microbes/frn/G000011545.frn.bz2	1.0	0.9990000000000001	0.9	1	0.97475
+G000011705	microbes/faa/G000011705.faa.bz2	microbes/ffn/G000011705.ffn.bz2	microbes/fna/G000011705.fna.bz2	microbes/frn/G000011705.frn.bz2	0.96	0.998	0.9	1	0.9645

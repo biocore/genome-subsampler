@@ -1,0 +1,3 @@
+#genome	faa_lname	ffn_lname	fna_lname	frn_lname	score_faa	score_fna	score_rrna	score_trna	score_norm
+G000010305	microbes/faa/G000010305.faa.bz2	microbes/ffn/G000010305.ffn.bz2	microbes/fna/G000010305.fna.bz2	microbes/frn/G000010305.frn.bz2	1.0	1.0	1.0	1	1.0
+G000018865	microbes/faa/G000018865.faa.bz2	microbes/ffn/G000018865.ffn.bz2	microbes/fna/G000018865.fna.bz2	microbes/frn/G000018865.frn.bz2	1.0	1.0	1.0	1	1.0
