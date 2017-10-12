@@ -25,10 +25,10 @@ class filterRepophlan(TestCase):
         """
         self.wkdir = mkdtemp()
         self.repophlan_fp = get_data_path('repophlan_microbes_wscores.txt')
-        self.repophlan_norm_good_fp = get_data_path('repophlan_filter_norm.good')
-        self.repophlan_norm_bad_fp = get_data_path('repophlan_filter_norm.bad')
-        self.repophlan_avg_good_fp = get_data_path('repophlan_filter_avg.good')
-        self.repophlan_avg_bad_fp = get_data_path('repophlan_filter_avg.bad')       
+        self.norm_good_fp = get_data_path('repophlan_filter_norm.good')
+        self.norm_bad_fp = get_data_path('repophlan_filter_norm.bad')
+        self.avg_good_fp = get_data_path('repophlan_filter_avg.good')
+        self.avg_bad_fp = get_data_path('repophlan_filter_avg.bad')
         self.score_threshold = 0.8
         self.output_fp = join(self.wkdir, 'output')
         self.score_cols = 'score_faa,score_fna,score_rrna,score_trna'
@@ -142,28 +142,28 @@ class filterRepophlan(TestCase):
         res = CliRunner().invoke(_main, params)
         self.assertEqual(res.exit_code, 0)
         with open('%s.good' % self.output_fp, 'r') as f:
-          obs = f.read()
-        with open(self.repophlan_norm_good_fp, 'r') as f:
-          exp = f.read()
+            obs = f.read()
+        with open(self.norm_good_fp, 'r') as f:
+            exp = f.read()
         self.assertEqual(obs, exp)
         with open('%s.bad' % self.output_fp, 'r') as f:
-          obs = f.read()
-        with open(self.repophlan_norm_bad_fp, 'r') as f:
-          exp = f.read()
+            obs = f.read()
+        with open(self.norm_bad_fp, 'r') as f:
+            exp = f.read()
         self.assertEqual(obs, exp)
 
         params.append('--avg')
         res = CliRunner().invoke(_main, params)
         self.assertEqual(res.exit_code, 0)
         with open('%s.good' % self.output_fp, 'r') as f:
-          obs = f.read()
-        with open(self.repophlan_avg_good_fp, 'r') as f:
-          exp = f.read()
+            obs = f.read()
+        with open(self.avg_good_fp, 'r') as f:
+            exp = f.read()
         self.assertEqual(obs, exp)
         with open('%s.bad' % self.output_fp, 'r') as f:
-          obs = f.read()
-        with open(self.repophlan_avg_bad_fp, 'r') as f:
-          exp = f.read()
+            obs = f.read()
+        with open(self.avg_bad_fp, 'r') as f:
+            exp = f.read()
         self.assertEqual(obs, exp)
 
 
